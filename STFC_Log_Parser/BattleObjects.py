@@ -1,10 +1,18 @@
 class Battle(object):
     rounds = []
     ships = {}
-    players ={}
+    players = []
 
-    def __init__(self):
-        pass
+    def __init__(self, playerList = []):
+        self.players = playerList
+
+    def populate_player_list(self):
+        
+        for round in self.rounds:
+            for damage_instance in round.dmg_instance:
+                if damage_instance.playerName not in self.players:
+                    self.players.append(damage_instance.playerName);
+    
 
     def total_hull_damage(self):
         dmg = 0
@@ -26,6 +34,37 @@ class Battle(object):
 
         return dmg
 
+    def total_shield_damage_per_player(self):
+        dmg = {}
+
+        for round in self.rounds:
+            playerDmg = round.total_shield_damage_per_player()
+            for player in playerDmg:
+                if player not in dmg:
+                    dmg[player] = 0
+                dmg[player] = dmg[player] + playerDmg[player]
+
+        return dmg
+
+    def total_mitigated_damage_per_player(self):
+        dmg = {}
+
+        hull = self.total_hull_damage_per_player()
+        shield = self.total_shield_damage_per_player()
+
+        for player in hull:
+            if player not in dmg:
+                    dmg[player] = 0
+            dmg[player] = dmg[player] + hull[player]
+
+        for player in shield:
+            if player not in dmg:
+                    dmg[player] = 0
+            dmg[player] = dmg[player] + shield[player]
+
+        return dmg
+
+
 
 class Round(object):
     dmg_instance = []
@@ -33,6 +72,7 @@ class Round(object):
     def __init__(self, dmginstance):
         self.dmg_instance = dmginstance
 
+#All ships/player functions
     def avg_mit_pct():
         avg = 0
 
@@ -74,6 +114,7 @@ class Round(object):
 
         return dmg
 
+## Per Player functions
     def total_hull_damage_per_player(self):
         dmg = {}
 
@@ -82,6 +123,19 @@ class Round(object):
                 dmg[instance.playerName] = 0
 
             dmg[instance.playerName] = dmg[instance.playerName] + instance.hullHP
+            if instance.targetDestroyed:
+                break
+
+        return dmg
+
+    def total_shield_damage_per_player(self):
+        dmg = {}
+
+        for instance in self.dmg_instance:
+            if instance.playerName not in dmg:
+                dmg[instance.playerName] = 0
+
+            dmg[instance.playerName] = dmg[instance.playerName] + instance.shieldHP
             if instance.targetDestroyed:
                 break
 

@@ -39,12 +39,24 @@ with open(file_path, newline='') as csvfile:
                 #i hate the zero indexing fix, but whatever, can fix it later
                 bat.rounds[int(row[0]) - 1].dmg_instance.append(damage_instance)
 
+    bat.populate_player_list()
+    print (bat.players)
 
+    printHullDict = bat.total_hull_damage_per_player() 
+    printShieldDict = bat.total_shield_damage_per_player() 
+    printMitDamage = bat.total_mitigated_damage_per_player()
 
-    print (f"Total damage to hulls: {bat.total_hull_damage():,}")
+    for player in bat.players:
+        print (f"{player}'s stats: ")
+        if player in printHullDict:
+            tempDmg = printHullDict[player]
+            print (f"   hull damage: {tempDmg:,}")
+        if player in printShieldDict:
+            tempDmg = printShieldDict[player]
+            print (f"   shield damage: {tempDmg:,}")
+        if player in printMitDamage:
+            tempDmg = printMitDamage[player]
+            print (f"   total damage: {tempDmg:,}")
 
-    printDict = bat.total_hull_damage_per_player() 
-
-    for player in printDict:
-        tempDmg = printDict[player]
-        print (f"{player}'s damage to hulls: {tempDmg:,}")
+        print("==============================================================")
+        
