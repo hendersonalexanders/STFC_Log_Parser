@@ -27,15 +27,15 @@ with open(file_path, newline='') as csvfile:
                 round = bto.Round([])
                 bat.rounds.append(round)
             elif (row[2] == "Attack"):
-                damage_instance = bto.DamageInstance(int(row[14]), int(row[13]), int(row[12]), int(row[15]), row[21], row[3])
+                damage_instance = bto.DamageInstance(int(row[14]), int(row[13]), int(row[12]), int(row[15]), row[21], row[3], row[11])
                 #i hate the zero indexing fix, but whatever, can fix it later
                 bat.rounds[int(row[0]) - 1].dmg_instance.append(damage_instance)
             elif (row[2] == "Shield Depleted"):
-                damage_instance = bto.DamageInstance(0, 0, 0, 0, row[21], row[3])
+                damage_instance = bto.DamageInstance(0, 0, 0, 0, row[21], row[3], row[11])
                 #i hate the zero indexing fix, but whatever, can fix it later
                 bat.rounds[int(row[0]) - 1].dmg_instance.append(damage_instance)
             elif (row[2] == "Combatant Destroyed"):
-                damage_instance = bto.DamageInstance(0, 0, 0, 0, row[21], row[3])
+                damage_instance = bto.DamageInstance(0, 0, 0, 0, row[21], row[3], row[11])
                 #i hate the zero indexing fix, but whatever, can fix it later
                 bat.rounds[int(row[0]) - 1].dmg_instance.append(damage_instance)
 
@@ -45,6 +45,7 @@ with open(file_path, newline='') as csvfile:
     printHullDict = bat.total_hull_damage_per_player() 
     printShieldDict = bat.total_shield_damage_per_player() 
     printMitDamage = bat.total_mitigated_damage_per_player()
+    printCritCount = bat.total_crits_per_player()
 
     for player in bat.players:
         print (f"{player}'s stats: ")
@@ -57,6 +58,9 @@ with open(file_path, newline='') as csvfile:
         if player in printMitDamage:
             tempDmg = printMitDamage[player]
             print (f"   total damage: {tempDmg:,}")
+        if player in printCritCount:
+            tempCrit = printCritCount[player]
+            print (f"   total critical hits: {tempCrit:,}")
 
         print("==============================================================")
         

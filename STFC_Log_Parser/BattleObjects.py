@@ -64,6 +64,17 @@ class Battle(object):
 
         return dmg
 
+    def total_crits_per_player(self):
+        crits = {}
+
+        for round in self.rounds:
+            playerCrits = round.total_crits_per_player()
+            for player in playerCrits:
+                if player not in crits:
+                    crits[player] = 0
+                crits[player] = crits[player] + playerCrits[player]
+
+        return crits
 
 
 class Round(object):
@@ -141,6 +152,19 @@ class Round(object):
 
         return dmg
 
+    def total_crits_per_player(self):
+        crits = {}
+
+        for instance in self.dmg_instance:
+            if instance.playerName not in crits:
+                crits[instance.playerName] = 0
+            if instance.isCrit == True:
+                crits[instance.playerName] = crits[instance.playerName] + 1
+            if instance.targetDestroyed:
+                break
+
+        return crits
+
 
 class DamageInstance(object):
     mitigated = 0
@@ -149,8 +173,9 @@ class DamageInstance(object):
     totalDamage = 0
     playerName = "jaqen h'ghar"
     targetDestroyed = False
+    isCrit = False
 
-    def __init__(self, mit, shp, hhp, tdmg, tdes, playname):
+    def __init__(self, mit, shp, hhp, tdmg, tdes, playname, crit):
         self.mitigated = mit
         self.shieldHP = shp
         self.hullHP = hhp
@@ -158,6 +183,8 @@ class DamageInstance(object):
         if tdes.lower() == "yes":
             self.targetDestroyed = True
         self.playerName = playname
+        if crit.lower() == "yes":
+            self.isCrit = True
 
 
     def mit_percent():
