@@ -30,8 +30,8 @@ class Battle(object):
 class Round(object):
     dmg_instance = []
     
-    def __init__(self):
-        pass
+    def __init__(self, dmginstance):
+        self.dmg_instance = dmginstance
 
     def avg_mit_pct():
         avg = 0

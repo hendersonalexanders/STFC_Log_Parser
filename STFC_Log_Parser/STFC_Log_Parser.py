@@ -24,14 +24,18 @@ with open(file_path, newline='') as csvfile:
 
         if len(row) > 0:
             if len(bat.rounds) < int(row[0]):
-                round = bto.Round()
+                round = bto.Round([])
                 bat.rounds.append(round)
             elif (row[2] == "Attack"):
-                damage_instance = bto.DamageInstance(int(row[14]), int(row[13]), int(row[12]), int(row[15]), row[20], row[3])
+                damage_instance = bto.DamageInstance(int(row[14]), int(row[13]), int(row[12]), int(row[15]), row[21], row[3])
                 #i hate the zero indexing fix, but whatever, can fix it later
                 bat.rounds[int(row[0]) - 1].dmg_instance.append(damage_instance)
             elif (row[2] == "Shield Depleted"):
-                damage_instance = bto.DamageInstance(0, 0, 0, 0, row[20], row[3])
+                damage_instance = bto.DamageInstance(0, 0, 0, 0, row[21], row[3])
+                #i hate the zero indexing fix, but whatever, can fix it later
+                bat.rounds[int(row[0]) - 1].dmg_instance.append(damage_instance)
+            elif (row[2] == "Combatant Destroyed"):
+                damage_instance = bto.DamageInstance(0, 0, 0, 0, row[21], row[3])
                 #i hate the zero indexing fix, but whatever, can fix it later
                 bat.rounds[int(row[0]) - 1].dmg_instance.append(damage_instance)
 
