@@ -1,3 +1,5 @@
+#This file is going to get crowded pretty quickly. Probably need to split them into something easier to process (1 obj per file?)
+
 class Battle(object):
     rounds = []
     ships = {}
@@ -22,6 +24,7 @@ class Battle(object):
 
         return dmg
 
+    #per player functions
     def total_hull_damage_per_player(self):
         dmg = {}
 
@@ -72,9 +75,28 @@ class Battle(object):
             for player in playerCrits:
                 if player not in crits:
                     crits[player] = 0
-                crits[player] = crits[player] + playerCrits[player]
+                crits[player] += playerCrits[player]
 
         return crits
+ 
+    def avg_mit_percent_per_player(self):
+        mit_pct = {}
+        player_avg_count = {}
+        for round in self.rounds:
+            playerMits = round.mitigation_percentage_per_player();
+            for player in playerMits:
+                if player not in mit_pct:
+                    mit_pct[player] = 0
+                    player_avg_count[player] = 0
+                mit_pct[player] += playerMits[player]
+                player_avg_count[player] += 1
+
+        for player in mit_pct:
+            mit_pct[player] = mit_pct[player] / player_avg_count[player]
+
+        return mit_pct
+
+            
 
 
 class Round(object):
@@ -165,6 +187,24 @@ class Round(object):
 
         return crits
 
+    def mitigation_percentage_per_player(self):
+        avg_mit_pct = {}
+        player_instance_count = {}
+        for instance in self.dmg_instance:
+            if instance.playerName not in avg_mit_pct:
+                avg_mit_pct[instance.playerName] = 0
+                player_instance_count[instance.playerName] = 0
+            
+            avg_mit_pct[instance.playerName] += instance.mit_percent()
+            player_instance_count[instance.playerName] += 1
+
+            if instance.targetDestroyed:
+                break
+        for player in avg_mit_pct:
+            avg_mit_pct[player] = avg_mit_pct[player] / player_instance_count[player]
+
+        return avg_mit_pct
+
 
 class DamageInstance(object):
     mitigated = 0
@@ -187,11 +227,13 @@ class DamageInstance(object):
             self.isCrit = True
 
 
-    def mit_percent():
-        return (mitigated/totalDamage) * 100
+    def mit_percent(self):
+        if self.totalDamage is 0:
+            return 0
+        return (self.mitigated/self.totalDamage) * 100
     
-    def shield_damage_percent():
-        return (shield/(shieldHP + hullHP)) * 100
+    def shield_damage_percent(self):
+        return (self.shield/(self.shieldHP +self. hullHP)) * 100
 
 
 

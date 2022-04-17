@@ -46,6 +46,8 @@ with open(file_path, newline='') as csvfile:
     printShieldDict = bat.total_shield_damage_per_player() 
     printMitDamage = bat.total_mitigated_damage_per_player()
     printCritCount = bat.total_crits_per_player()
+    printMitPct = bat.avg_mit_percent_per_player()
+
 
     for player in bat.players:
         print (f"{player}'s stats: ")
@@ -61,6 +63,9 @@ with open(file_path, newline='') as csvfile:
         if player in printCritCount:
             tempCrit = printCritCount[player]
             print (f"   total critical hits: {tempCrit:,}")
+        if player in printMitPct:
+            tempMit = printMitPct[player]
+            print (f"   average mit percent: {tempMit:,}")
 
         print("==============================================================")
         
