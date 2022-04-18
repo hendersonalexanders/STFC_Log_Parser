@@ -101,9 +101,11 @@ class Battle(object):
 
 class Round(object):
     dmg_instance = []
+    round_nbr = 0
     
-    def __init__(self, dmginstance):
+    def __init__(self, dmginstance, round_nbr):
         self.dmg_instance = dmginstance
+        self.round_nbr = round_nbr
 
 #All ships/player functions
     def avg_mit_pct():

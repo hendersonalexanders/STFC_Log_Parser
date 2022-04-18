@@ -19,13 +19,15 @@ with open(file_path, newline='') as csvfile:
             #Label row of the "battle rounds" content. Can probably use this to make a flexible parser 
             if row[0] == "Round":
                 break;
-
+            
+    roundcount = 1
     for row in spamreader:
-
         if len(row) > 0:
             if len(bat.rounds) < int(row[0]):
-                round = bto.Round([])
+                round = bto.Round([], roundcount)
+                round.round_nbr = roundcount
                 bat.rounds.append(round)
+                roundcount += 1
             elif (row[2] == "Attack"):
                 damage_instance = bto.DamageInstance(int(row[14]), int(row[13]), int(row[12]), int(row[15]), row[21], row[3], row[11])
                 #i hate the zero indexing fix, but whatever, can fix it later
@@ -65,7 +67,17 @@ with open(file_path, newline='') as csvfile:
             print (f"   total critical hits: {tempCrit:,}")
         if player in printMitPct:
             tempMit = printMitPct[player]
-            print (f"   average mit percent: {tempMit:,}")
+            print (f"   average mit percent: {tempMit:.2f}")
+
+        
+        tempRoundMit = "Per-round mitigation: "
+        for round in bat.rounds:
+            mitPerPlayer = round.mitigation_percentage_per_player()
+            if player in mitPerPlayer:
+                mitNumber = mitPerPlayer[player]
+                tempRoundMit = tempRoundMit + f", {round.round_nbr}: " + f"{mitNumber:.2f}"
+
+        print(tempRoundMit)
 
         print("==============================================================")
         
